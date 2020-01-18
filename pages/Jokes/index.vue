@@ -1,15 +1,15 @@
 <template>
   <div>
-      <h1>Joke</h1>
-      <Joke v-for="joke in jokes" :key="joke.id" :id="joke.id" :joke="joke.joke" >
-
-      </Joke>
+    <SearchJokes v-on:search-text="searchText" />
+    <h1>Joke</h1>
+    <Joke v-for="joke in jokes" :key="joke.id" :id="joke.id" :joke="joke.joke"></Joke>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import Joke from '@/components/Joke';
+import axios from 'axios'
+import Joke from '@/components/Joke'
+import SearchJokes from '@/components/SearchJokes'
 export default {
   data() {
     return {
@@ -17,18 +17,32 @@ export default {
     }
   },
   components: {
-      Joke
+    Joke,
+    SearchJokes
   },
   async created() {
     const config = {
       headers: { Accept: 'application/json' }
     }
     try {
-      const res = await axios.get('https://icanhazdadjoke.com/search', config);
-      this.jokes = res.data.results;
-
+      const res = await axios.get('https://icanhazdadjoke.com/search', config)
+      this.jokes = res.data.results
     } catch (error) {
       console.log(error)
+    }
+  },
+  methods: {
+    async searchText(text) {
+      console.log(text)
+      const config = {
+        headers: { Accept: 'application/json' }
+      }
+      try {
+        const res = await axios.get(`https://icanhazdadjoke.com/search?term=${text}`, config)
+        this.jokes = res.data.results
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   head() {
